@@ -44,10 +44,6 @@ Second, in (2), we replace the `IOperation` method with `java.util.function.ToDo
 
 The last step is replacing the `IOperation` implementation in `BaseCalculator` subclasses. The code below shows the [`OnlyAdditionCalculator`](./src/main/java/edu/utfpr/cp/sa/OnlyAdditionCalculator.java) as an exemple.
 
-The figure below shows a simpler class structure.
-
-<img src="new-package.svg" />
-
 ```java
 public class OnlyAdditionCalculator 
     extends BaseCalculator {
@@ -66,6 +62,10 @@ public class OnlyAdditionCalculator
 ```
 
 In (1), we replace the instantiation of `IOperation` with a lambda that adheres to the functional interface we use.
+
+The figure below shows the resulting simpler class structure.
+
+<img src="new-package.svg" />
 
 ## Project Setup
 This project requires Maven and Java 17 installed. The easiest way to run the project is building a package.
