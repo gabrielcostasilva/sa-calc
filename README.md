@@ -1,37 +1,114 @@
-# Calculator
-This project introduces a calculator that calculates four basic operations: addition, subtraction, multiplication, and division. 
+# Extensible Calculator
+This project is a spinoff from the [KISS calculator](https://github.com/gabrielcostasilva/sa-calc) implementation.
 
-This project is used throughout the Software Architecture module I teach at [Universidade Tecnológica Federal do Paraná, Cornélio Procópio, Brasil](http://www.utfpr.edu.br/campus/cornelioprocopio) for Software Engineering graduate students. 
+As the previous project, I use it in the Software Architecture module I teach at [Universidade Tecnológica Federal do Paraná, Cornélio Procópio, Brasil](http://www.utfpr.edu.br/campus/cornelioprocopio) for Software Engineering graduate students. 
 
-The main branch shows a use case for the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) implementation. Check out other branches to find out how this project evolves to address other design principles.
+Unlike the previous project, this shows off the [open-closed principle](https://en.wikipedia.org/wiki/Open–closed_principle). In a nutshell, the open-closed principle argues that a module should be open for extension, but closed for modification. 
+
+As this project shows, this principle comes with a cost. **Please, do not get me wrong. Using the open-close principle IS NOT bad**. The point is that you should analyse whether it pays off before implementing it.
 
 ## Project Overview
-This calculator consists of one single class - [Calculator](./src/main/java/edu/utfpr/cp/sa/Calculator.java). This class defines a single method that choose the operation based on command line arguments. The code below shows the full method.
+The original calculator consists of a single class, with a single method, as the code snippet below shows. Please, check out the [original project](https://github.com/gabrielcostasilva/sa-calc) for further details.
 
 ```java
 public static void main(String[] args) {
-    double a = Double.parseDouble(args[0]); // (1)
-    double b = Double.parseDouble(args[2]); // (1)
+    double a = Double.parseDouble(args[0]); 
+    double b = Double.parseDouble(args[2]); 
 
-    char op = args[1].charAt(0); // (1)
+    char op = args[1].charAt(0); 
 
-    double result = switch (op) { // (2)
-        case '+' -> a + b; // (3)
-        case '-' -> a - b; // (3)
-        case 'x' -> a * b; // (3)
-        case '/' -> a / b; // (3)
-        default -> throw new IllegalArgumentException("Unknown operator: " + op); // (4)
+    double result = switch (op) { 
+        case '+' -> a + b; 
+        case '-' -> a - b; 
+        case 'x' -> a * b; 
+        case '/' -> a / b; 
+        default -> throw new IllegalArgumentException("Unknown operator: " + op); 
     };
 
-    System.out.println(result); // (5)
+    System.out.println(result); 
 }
 ```
 
-1. Transforms command line arguments into values representing two numbers (first and third arguments) and a sign (second argument).
-2. Decides which operation to perform.
-3. Calculates the result for a given operation.
-4. Deals with unknown operators.
-5. Print out the result.
+To make this project extensible, we started by [moving arithmetic](#moving-arithmetic-operations-to-classes) operations to classes. [Then, we moved](#creating-calculator-superclass) the code that perform operations to a superclass. This superclass is also responsible for grouping available arithmetic operations. Finally, [we created subclasses](#extending-basecalculator) that set arithmetic operations that are available and perform those operations.
+
+### Moving arithmetic operations to classes
+We created a class for each arithmetic operation in the original code. These classes implement an interface ([`IOperation`](./src/main/java/edu/utfpr/cp/sa/IOperation.java)) that sets the contract for all arithmetic operations - as the code below shows. 
+
+```java
+public interface IOperation {
+    double calculates(double a, double b);
+    
+}
+```
+This contract sets that any arithmetic operation receives two arguments and return a result. How an operation works is delegated to its implementation. This is an essential step to enables extension.
+
+Next, we created implementations representing the four basic arithmetic operations in the original class. The code below shows the addition implementation.
+
+```java
+public class AdditionOperation 
+    implements IOperation { // (1)
+
+    @Override
+    public double calculates(double a, double b) {
+        return a + b; // (2)
+    }
+    
+}
+```
+
+1. Adheres to the arithmetic operation contract.
+2. Implements the addition operation.
+
+### Creating calculator superclass
+[`BaseCalculator`](./src/main/java/edu/utfpr/cp/sa/BaseCalculator.java) is a superclass responsible for receiving input data and calling the proper arithmetic operation. To do so, we moved the code from the `main()` method in the original class to the superclass, as the snippet below shows.
+
+```java 
+// (...)
+
+public void chooseAndPerform(String[] args) {
+    double a = Double.parseDouble(args[0]);
+    double b = Double.parseDouble(args[2]);
+
+    char op = args[1].charAt(0);
+
+    double result = operationMap.get(op).calculates(a, b); // (1)
+
+    System.out.println(result);
+}
+
+// (...)
+```
+
+The entire code remains the same, apart from (1). To identifying the set of arithmetic operations available, we created a `java.util.Map` called `operationMap` in the `BaseCalculator` class. `operationMap` maps a character and an `IOperation` implementation. The class constructor instantiates `operationMap`, and each subclass is responsible for adding arithmetic operations they support.
+
+Thus, the code in (1) retrieves the arithmetic operation implementation according to the argument received, and calls the method responsible for performing the calculation.
+
+### Extending BaseCalculator
+Finally, we can create subclasses that extend `BaseCalculator` by adding arithmetic operations. The UML class class diagram in the figure below shows the class structure.
+
+<img src="" />
+
+The [`OnlyAdditionCalculator`](./src/main/java/edu/utfpr/cp/sa/OnlyAdditionCalculator.java) class extends `BaseCalculator` by adding the addition operation, as the code below shows.
+
+```java 
+public class OnlyAdditionCalculator 
+    extends BaseCalculator { // (1)
+
+    OnlyAdditionCalculator() {
+        operationMap.put('+', new AdditionOperation()); // (2)
+        
+    }
+
+    public static void main(String[] args) { // (3)
+        var calc = new OnlyAdditionCalculator();
+        calc.chooseAndPerform(args);
+    }
+    
+}
+```
+1. Sets a new feature without touching the original code.
+2. Adds an arithmetic operation implementation.
+3. Do the math by passing the arguments to the method in the superclass.
 
 ## Project Setup
 This project requires Maven and Java 17 installed. The easiest way to run the project is building a package.
