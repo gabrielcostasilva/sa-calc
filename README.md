@@ -84,7 +84,7 @@ The entire code remains the same, apart from (1). To identifying the set of arit
 Thus, the code in (1) retrieves the arithmetic operation implementation according to the argument received, and calls the method responsible for performing the calculation.
 
 ### Extending BaseCalculator
-Finally, we can create subclasses that extend `BaseCalculator` by adding arithmetic operations. The UML class class diagram in the figure below shows the class structure. The diagram shows that `BaseCalculator` features are extended by `OnlyAdditionCalculator`. Besides, each new calculator implementation extends the previous one with a new feature.
+Finally, we can create subclasses that extend `BaseCalculator` by adding arithmetic operations. The UML class diagram in the figure below shows the class structure. The diagram shows that `BaseCalculator` features are extended by `OnlyAdditionCalculator`. Besides, each new calculator implementation extends the previous one with a new feature.
 
 <img src="./package.svg" />
 
