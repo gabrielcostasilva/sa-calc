@@ -4,7 +4,7 @@ public class BasicFourOperationsCalculator
     extends ThreeOperationsCalculator {
 
     BasicFourOperationsCalculator() {
-        operationMap.put('/', new DivisionOperation());
+        operationMap.put('/', (a, b) -> a / b);
     }
 
     public static void main(String[] args) {

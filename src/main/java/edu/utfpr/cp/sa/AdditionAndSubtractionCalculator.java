@@ -4,7 +4,7 @@ public class AdditionAndSubtractionCalculator
     extends OnlyAdditionCalculator {
 
     AdditionAndSubtractionCalculator() {
-        operationMap.put('-', new SubtractionOperation());
+        operationMap.put('-', (a, b) -> a - b);
 
     }
 

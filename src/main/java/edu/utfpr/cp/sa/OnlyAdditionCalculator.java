@@ -4,7 +4,7 @@ public class OnlyAdditionCalculator
     extends BaseCalculator {
 
     OnlyAdditionCalculator() {
-        operationMap.put('+', new AdditionOperation());
+        operationMap.put('+', (a, b) -> a + b);
         
     }
 

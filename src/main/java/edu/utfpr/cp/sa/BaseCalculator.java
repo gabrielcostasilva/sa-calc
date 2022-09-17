@@ -2,10 +2,11 @@ package edu.utfpr.cp.sa;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.ToDoubleBiFunction;
 
 public abstract class BaseCalculator {
 
-    Map<Character, IOperation> operationMap;
+    Map<Character, ToDoubleBiFunction<Double, Double>> operationMap;
 
     BaseCalculator() {
         operationMap = new HashMap<>();
@@ -18,7 +19,7 @@ public abstract class BaseCalculator {
 
         char op = args[1].charAt(0);
 
-        double result = operationMap.get(op).calculates(a, b);
+        double result = operationMap.get(op).applyAsDouble(a, b);
 
         System.out.println(result);
     }
