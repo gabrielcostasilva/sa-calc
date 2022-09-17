@@ -86,9 +86,9 @@ Thus, the code in (1) retrieves the arithmetic operation implementation accordin
 ### Extending BaseCalculator
 Finally, we can create subclasses that extend `BaseCalculator` by adding arithmetic operations. The UML class class diagram in the figure below shows the class structure.
 
-<img src="" />
+<img src="./package.svg" />
 
-The [`OnlyAdditionCalculator`](./src/main/java/edu/utfpr/cp/sa/OnlyAdditionCalculator.java) class extends `BaseCalculator` by adding the addition operation, as the code below shows.
+The [`OnlyAdditionCalculator`](./src/main/java/edu/utfpr/cp/sa/OnlyAdditionCalculator.java) class extends `BaseCalculator` by adding the addition operation, as the code below shows. The diagram shows that `BaseCalculator` features are extended by `OnlyAdditionCalculator`. Besides, each new calculator implementation extends the previous one with a new feature.
 
 ```java 
 public class OnlyAdditionCalculator 
